@@ -1,0 +1,15 @@
+<% 
+var pipe = require('pipe');
+var log = new Log();
+var router = require('router').app;
+pipe.plug(router);
+var common=require('pipe-common');
+router.get("resource", function(req, res, session){
+	log.debug(req);
+});
+router.put("resource", function(req, res, session){
+
+});
+
+pipe.resolve(request,response,session);
+%>
