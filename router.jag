@@ -1,13 +1,16 @@
 <% 
 var pipe = require('pipe');
 var log = new Log();
-var router = require('router').app;
+var router = require('modules/router.js');
 pipe.plug(router);
+router = router.app;
 var common=require('pipe-common');
-router.get("resource", function(req, res, session){
-	log.debug(req);
+router.get("/resource/:id", function(ctx){
+	var file_id = ctx._params.id;
+	var CONSUMER_TOKEN = ctx._headers().consumer_token;
+	var CONSUMER_USER = ctx._headers().consumer_user;
 });
-router.put("resource", function(req, res, session){
+router.put("/resource", function(ctx){
 
 });
 
