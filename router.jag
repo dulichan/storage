@@ -5,13 +5,31 @@ var router = require('modules/router.js');
 pipe.plug(router);
 router = router.app;
 var common=require('pipe-common');
-router.get("/resource/:id", function(ctx){
-	var file_id = ctx._params.id;
+
+var storage = require('/modules/storage/storage.js').Storage;
+
+router.get("/test", function(ctx){
+	var file = new File("/test/form.html");
+	var data = file.getStream();
+	print(data);
+	file.close();
+});
+
+router.get("/resource/:uuid", function(ctx){
+	var uuid = ctx._params.uuid;
 	var CONSUMER_TOKEN = ctx._headers().consumer_token;
 	var CONSUMER_USER = ctx._headers().consumer_user;
+	var file = storage.get(uuid, CONSUMER_TOKEN, CONSUMER_USER);
+	print(file);
+	ctx._res.contentType = 'image/png'
+	// file.close();
 });
-router.put("/resource", function(ctx){
-
+router.post("/resource", function(ctx){
+	var CONSUMER_TOKEN = ctx._headers().consumer_token;
+	var CONSUMER_USER = ctx._headers().consumer_user;
+	var file = ctx._files()[0];
+	var uuid = storage.persist(file, CONSUMER_TOKEN, CONSUMER_USER);
+	print(uuid);
 });
 
 pipe.resolve(request,response,session);
