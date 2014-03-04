@@ -8,21 +8,16 @@ var common=require('pipe-common');
 
 var storage = require('/modules/storage/storage.js').Storage;
 
-router.get("/test", function(ctx){
-	var file = new File("/test/form.html");
-	var data = file.getStream();
-	print(data);
-	file.close();
-});
 
-router.get("/resource/:uuid", function(ctx){
+router.get(["/resource/:uuid", "/resource/:uuid/:name"], function(ctx){
 	var uuid = ctx._params.uuid;
 	var CONSUMER_TOKEN = ctx._headers().consumer_token;
 	var CONSUMER_USER = ctx._headers().consumer_user;
 	var file = storage.get(uuid, CONSUMER_TOKEN, CONSUMER_USER);
-	print(file);
-	ctx._res.contentType = 'image/png'
-	// file.close();
+	if(file){
+		print(file.data);
+		ctx._res.contentType = file.content_type;
+	}
 });
 router.post("/resource", function(ctx){
 	var CONSUMER_TOKEN = ctx._headers().consumer_token;

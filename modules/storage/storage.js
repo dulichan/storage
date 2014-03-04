@@ -20,8 +20,46 @@ var UUID = (function() {
     }
     return self;
 })();
+
 var Storage = {};
 var module = (function() {
+	function mime(path){
+		var index = path.lastIndexOf('.');
+	    var ext = index < path.length ? path.substring(index + 1) : '';
+	    switch (ext) {
+	        case 'js':
+	            return 'application/javascript';
+	        case 'css':
+	            return 'text/css';
+	        case 'html':
+	            return 'text/html';
+	        case 'png':
+	            return 'image/png';
+	        case 'gif':
+	            return 'image/gif';
+	        case 'jpeg':
+	            return 'image/jpeg';
+	        case 'jpg':
+	            return 'image/jpg';
+	        case 'apk':
+	            return 'application/vnd.android.package-archive';
+			case 'ipa':
+				return 'application/octet-stream';
+			case 'plist':
+				return 'text/xml';
+			case 'woff':
+	            return 'application/octet-stream';    
+	        case 'ttf':
+	            return 'application/octet-stream'; 
+	        case 'hbs':
+	            return 'text/x-handlebars-template'; 
+	        case 'txt':
+	        	return 'text/plain';
+	        case 'json':
+	        	return 'application/json';
+	    }
+	}
+
     Storage.persist = function(file_wrapper, consumer_id, user_id) {
         var engine = require("/modules/storage/mysql_storage.js").MySQLStorage;
         var uuid = UUID.generate();
@@ -29,7 +67,8 @@ var module = (function() {
         var file_data = file_wrapper.file;
         var file_object = {
             name: file_wrapper.name,
-            data: file_data
+            data: file_data,
+            content_type: mime(file_wrapper.name)
         }
         var meta = {
             consumer_id: consumer_id,
