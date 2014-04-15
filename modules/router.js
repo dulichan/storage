@@ -1,7 +1,7 @@
 var name = 'simpleRouter';
 
 var app = {};
-
+var RouteMap;
 /**
  * The default renderer will print the output as a JSON object
  * @param data
@@ -49,7 +49,7 @@ var handle = function (req, res, session, handlers) {
 
 
 var exec = (function (RouteMap) {
-    //var RouteMap=require('/themes/default/route-map.js').RouteMap;
+    var RouteMap=require('/modules/route-map.js').RouteMap;
     var routes = {};
     var GET_METHOD = 'GET';
     var POST_METHOD = 'POST';

@@ -1,14 +1,22 @@
 var H2Storage = {};
 var module = (function() {
     var db = new Database("WSO2StorageH2");
+    var setup = function(){
+        var query = db.query("SHOW TABLES");
+        if(query.length==0){
+            var script = new File("/storage-scripts/h2.sql");
+            script.open("r");
+            db.query(script.readAll());
+            script.close();
+        }
+    }
     /*
 			uuid - Unique identifier
 			file - {name:"", data: ""}
-			meta - {consumer_id:"", user_id:""}
 		*/
-    H2Storage.persist = function(uuid, file, meta) {
-        db.query("INSERT INTO `files` (`UUID`, `name`, `user_id`, `consumer_id`, `data`, `content_type`) VALUES (?, ?, ?, ?, ?, ?);", 
-        	uuid, file.name, meta.user_id, meta.consumer_id, file.data.getStream(), file.content_type);
+    H2Storage.persist = function(uuid, file) {
+        db.query("INSERT INTO `files` (`UUID`, `name`, `data`, `content_type`) VALUES (?, ?, ?, ?);", 
+        	uuid, file.name, file.data.getStream(), file.content_type);
     }
     H2Storage.get = function(uuid) {
         var files = db.query("SELECT * FROM `files` WHERE `UUID`=?", uuid);

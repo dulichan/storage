@@ -2,26 +2,24 @@
 var pipe = require('pipe');
 var log = new Log();
 var router = require('modules/router.js');
+var common=require('pipe-common');
+pipe.plug(common.queryParser);
+pipe.plug(common.bodyParser);
 pipe.plug(router);
 router = router.app;
-var common=require('pipe-common');
-
 var storage = require('/modules/storage/storage.js').Storage;
 
-
-router.get(["/resource/:uuid", "/resource/:uuid/:name"], function(ctx){
-	var uuid = ctx._params.uuid;
+router.get(["/resource/:uuid", "/resource/:uuid/:name"], function(req, res){
+	var uuid = req.params.uuid;
 	var file = storage.get(uuid);
 	if(file){
 		print(file.data);
-		ctx._res.contentType = file.content_type;
+		req.contentType = file.content_type;
 	}
 });
-router.post("/resource", function(ctx){
-	var CONSUMER_TOKEN = ctx._headers().consumer_token;
-	var CONSUMER_USER = ctx._headers().consumer_user;
-	var file = ctx._files()[0];
-	var uuid = storage.persist(file, CONSUMER_TOKEN, CONSUMER_USER);
+router.post("/resource", function(req, res){
+	var file = req.files[0];
+	var uuid = storage.persist(file);
 	print(uuid);
 });
 

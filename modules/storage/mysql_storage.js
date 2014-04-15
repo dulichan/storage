@@ -4,11 +4,10 @@ var module = (function() {
     /*
 			uuid - Unique identifier
 			file - {name:"", data: ""}
-			meta - {consumer_id:"", user_id:""}
 		*/
-    MySQLStorage.persist = function(uuid, file, meta) {
-        db.query("INSERT INTO `wso2_storage`.`files` (`UUID`, `name`, `user_id`, `consumer_id`, `data`, `content_type`) VALUES (?, ?, ?, ?, ?, ?);", 
-        	uuid, file.name, meta.user_id, meta.consumer_id, file.data.getStream(), file.content_type);
+    MySQLStorage.persist = function(uuid, file) {
+        db.query("INSERT INTO `wso2_storage`.`files` (`UUID`, `name`, `data`, `content_type`) VALUES (?, ?, ?, ?);", 
+        	uuid, file.name, file.data.getStream(), file.content_type);
     }
     MySQLStorage.get = function(uuid) {
         var files = db.query("SELECT * FROM `wso2_storage`.`files` WHERE `UUID`=?", uuid);

@@ -40,6 +40,13 @@ var module = (function() {
 	    }
 	}
 
+    /** 
+        Storage engine interface
+        interface Storage_Engine = {
+            persist: function(uuid, file){},
+            get: function(uuid){},
+        }
+    **/
     var instatiate_engine = function(type){
         var engine = configs.storage_engine;
         if(engine=="h2"){
@@ -48,41 +55,31 @@ var module = (function() {
             return require("/modules/storage/mysql_storage.js").MySQLStorage;
         }
     }
+    /* 
+        Initially designed to switch the storage engine from RDBMS to NoSQL
+    */
     var storage_engine = instatiate_engine();
     /**
       Persist a file to storage.
-      file_wrapper -
-        {
-          file: jaggery-file object,
-          name: name of the file
-        }
+      file - jaggery-file object
       consumer_id - Consumer ID that is setup on Storage
     **/
-    Storage.persist = function(file_wrapper, consumer_id) {
+    Storage.persist = function(file, consumer_id) {
         var uuid = require("uuid").generate();
-        file_wrapper.file.open("r");
-        var file_data = file_wrapper.file;
+        file.open("r");
         var file_object = {
-            name: file_wrapper.name,
-            data: file_data,
-            content_type: mime(file_wrapper.name)
+            name: file.getName(),
+            data: file,
+            content_type: mime(file.getName())
         }
-        var meta = {
-            consumer_id: consumer_id,
-            user_id: user_id
-        };
-        storage_engine.persist(uuid, file_object, meta);
-        file_wrapper.file.close();
+        storage_engine.persist(uuid, file_object);
+        file.close();
         return uuid;
     }
     /**
       Obtain a file from the storage using uuid
     **/
     Storage.get = function(uuid) {
-    	var meta = {
-            consumer_id: consumer_id,
-            user_id: user_id
-        };
-    	return storage_engine.get(uuid, meta);
+    	return storage_engine.get(uuid);
     }
 })();
