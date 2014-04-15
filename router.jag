@@ -1,12 +1,12 @@
 <%
 var pipe = require('pipe');
 var log = new Log();
-var router = require('modules/router.js');
+var router = require('router');
 var common=require('pipe-common');
 
 router = router.app;
-pipe.plug(common.queryParser);
-pipe.plug(common.bodyParser);
+// pipe.plug(common.queryParser());
+// pipe.plug(common.bodyParser());
 pipe.plug(router);
 
 var storage = require('/modules/storage/storage.js').Storage;
