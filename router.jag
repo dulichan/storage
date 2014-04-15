@@ -1,4 +1,4 @@
-<% 
+<%
 var pipe = require('pipe');
 var log = new Log();
 var router = require('modules/router.js');
@@ -11,9 +11,7 @@ var storage = require('/modules/storage/storage.js').Storage;
 
 router.get(["/resource/:uuid", "/resource/:uuid/:name"], function(ctx){
 	var uuid = ctx._params.uuid;
-	var CONSUMER_TOKEN = ctx._headers().consumer_token;
-	var CONSUMER_USER = ctx._headers().consumer_user;
-	var file = storage.get(uuid, CONSUMER_TOKEN, CONSUMER_USER);
+	var file = storage.get(uuid);
 	if(file){
 		print(file.data);
 		ctx._res.contentType = file.content_type;
